@@ -135,3 +135,5 @@ STATICFILES_DIRS=[
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 LOGIN_URL = '/accounts/login'
+
+ALLOWED_HOSTS = ['yourdomain.com', 'localhost', 'e-library-9z4g.onrender.com']
