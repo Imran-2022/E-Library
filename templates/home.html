@@ -1,0 +1,61 @@
+{% extends "base.html" %} {% load static %} {% block content %}
+
+<!-- Main Content -->
+<div class="container py-5">
+  <div class="row">
+    <div class="col-md-6">
+      <div class="text-dark">
+        <h1 class="display-4 my-4">Welcome to Our Library</h1>
+        <p class="lead py-3">
+          Discover a wide range of books available for borrowing.
+        </p>
+        <a href="{% url 'homepage' %}" class="btn btn-primary btn-lg">Explore Books</a>
+      </div>
+    </div>
+    <div class="col-md-6">
+      <img class="img-fluid" src="{% static 'book.jpg' %}" alt="Book Image" />
+    </div>
+  </div>
+</div>
+
+<div class="container py-4">
+  <div class="row">
+    <div class="col-md-3">
+      <h5>Categories :</h5>
+      <div class="list-group">
+        {% for i in category %}
+        <a
+          href="{% url 'category_wise_book' i.slug %}"
+          class="list-group-item list-group-item-action"
+          >{{ i.name }}</a
+        >
+        {% endfor %}
+      </div>
+    </div>
+    <div class="col-md-9">
+      <h3>books :</h3>
+      <p>{{ data|length }} results found</p>
+      <div class="container py-4">
+        <div class="row">
+          {% for book in data %}
+
+          <div class="col-md-12 mb-4">
+            <div class="card shadow-sm">
+              <div class="card-body d-flex align-items-center justify-content-between">
+                <img src="{{ book.image_url }}" class="card-img" alt="{{ book.book_name }} Image" style="width: 100px; height: 80px;">
+                  <p class="card-text"><span class="fw-bold">Book</span> :{{ book.book_name }}</p>
+                  <p class="card-text"><span class="fw-bold">Borrow_Price</span> : ${{ book.borrow_price }}</p>
+                  <p class="card-text"><span class="fw-bold">Category</span> : {{ book.category.name }}</p>
+                  <p><a href="{% url 'book_details' book.id %}" class="card-text btn btn-primary btn-sm">View Details</a></p>
+              </div>
+            </div>
+          </div>
+          
+          {% endfor %}
+        </div>
+      </div>
+      
+    </div>
+  </div>
+</div>
+{% endblock content %}
