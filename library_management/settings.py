@@ -25,8 +25,8 @@ SECRET_KEY = 'django-insecure-r7v)czla=7o$84(cnri6y%j7v8&-cpz-#nb30qzhukn6!rfl=_
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["*"]
-CORS_ALLOWED_ORIGINS = ["https://e-library-9z4g.onrender.com", "http://127.0.0.1:8080"]
+ALLOWED_HOSTS = ['*']
+CORS_ALLOWED_ORIGINS = ['https://e-library-9z4g.onrender.com', 'https://*.127.0.0.1']
 
 # Application definition
 
