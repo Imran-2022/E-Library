@@ -27,9 +27,9 @@ DEBUG = True
 
 ALLOWED_HOSTS = ['*']
 
-CSRF_TRUSTED_ORIGINS = ["https://e-library-9z4g.onrender.com"]
-CSRF_ALLOWED_ORIGINS = ["https://e-library-9z4g.onrender.com"]
-CORS_ORIGINS_WHITELIST = ["https://e-library-9z4g.onrender.com"]
+CSRF_TRUSTED_ORIGINS = ["https://e-library-cnyp.onrender.com"]
+CSRF_ALLOWED_ORIGINS = ["https://e-library-cnyp.onrender.com"]
+CORS_ORIGINS_WHITELIST = ["https://e-library-cnyp.onrender.com"]
 
 
 # Application definition
