@@ -6,6 +6,60 @@ from django.shortcuts import get_object_or_404, render
 from .models import Books,Order,Comment
 from django.contrib import messages
 # Create your views here.
+from accounts.models import Account  # Import Account model
+from django.utils import timezone
+# books/views.py
+from .forms import ReviewForm  # Import ReviewForm
+@login_required
+def add_comment(request, id):
+    if request.method == 'POST':
+        book = Books.objects.get(pk=id)
+        review_form = ReviewForm(request.POST)
+        if review_form.is_valid():
+            comment_text = review_form.cleaned_data['comment']
+            Comment.objects.create(book=book, user=request.user, comment=comment_text)
+            messages.success(request, 'Review added successfully!')
+            return redirect('book_details', id=id)
+    else:
+        review_form = ReviewForm()
+    return render(request, 'book_details.html', {'book': book, 'review_form': review_form})
+
+@login_required
+def return_book(request, id):
+    order = get_object_or_404(Order, id=id, user=request.user)
+    book = order.book
+    account, created = Account.objects.get_or_create(user=request.user)
+    
+    # Update the book's availability
+    book.quantity_available += 1
+    book.save()
+    
+    # Refund the user
+    account.balance += book.borrow_price
+    account.save()
+    
+    # Update the order with the return date
+    order.return_date = timezone.now()
+    order.save()
+
+    messages.success(request, 'Book returned successfully!')
+    return redirect('profile')
+
+@login_required
+def borrow_now(request):
+    if request.method == 'POST' and request.user.is_authenticated:
+        book_id = request.POST.get('book_id')
+        if book_id:
+            book = Books.objects.get(id=book_id)
+            account, created = Account.objects.get_or_create(user=request.user)
+            if account.balance >= book.borrow_price:
+                Order.objects.create(book=book, user=request.user)
+                account.balance -= book.borrow_price
+                account.save()
+                messages.success(request, 'Book borrowed successfully!')
+            else:
+                messages.warning(request, 'Insufficient balance!')
+    return redirect('profile')
 
 @login_required
 def add_post(request):

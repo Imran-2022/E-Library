@@ -1,0 +1,27 @@
+<!-- templates/profile.html -->
+
+{% extends "base.html" %}
+{% block content %}
+  <h2>User Profile</h2>
+  <p>Balance: {{ account.balance }}</p>
+  <h3>Borrowing History</h3>
+  <ul>
+    {% for order in orders %}
+      <li>{{ order.book.title }} - Borrowed on {{ order.order_date }}{% if order.return_date %} - Returned on {{ order.return_date }}{% endif %}</li>
+    {% empty %}
+      <li>No borrowing history</li>
+    {% endfor %}
+  </ul>
+  <h3>Deposit Money</h3>
+  <a href="{% url 'deposit_money' %}">Deposit Money</a>
+
+  <!-- Display borrowed books and include a return option -->
+<h2>Borrowed Books:</h2>
+<ul>
+    {% for order in orders %}
+        <li>{{ order.book.title }} - 
+            <a href="{% url 'return_book' order.id %}">Return</a>
+        </li>
+    {% endfor %}
+</ul>
+{% endblock %}

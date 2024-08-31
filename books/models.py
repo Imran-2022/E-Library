@@ -4,6 +4,16 @@ from django.contrib.auth.models import User
 from django.utils import timezone
 
 
+class Order(models.Model):
+    book = models.ForeignKey('Books', on_delete=models.CASCADE)
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    order_date = models.DateTimeField(default=timezone.now)
+    return_date = models.DateTimeField(null=True, blank=True)  # Date when the book is returned
+
+    def __str__(self):
+        return f"Order #{self.id} - {self.book.book_name} by {self.user.username}"
+
+
 class Books(models.Model):
     title = models.CharField(max_length=50)
     image_url = models.URLField(max_length=200, default='')  # Default empty string for image URL

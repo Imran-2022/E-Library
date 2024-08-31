@@ -5,17 +5,25 @@ from django.contrib.auth import authenticate, login,update_session_auth_hash,log
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from books.models import Books
-# Create your views here.
+from .forms import DepositForm
+from .models import Account
+# accounts/views.py
 
-# def add_author(request):
-#     if request.method=='POST':
-#         author_form=forms.AuthorForm(request.POST)
-#         if author_form.is_valid():
-#             author_form.save()
-#             return redirect('add_author')
-#     else:
-#         author_form=forms.AuthorForm()
-#     return render(request, 'add_author.html',{'form':author_form})
+@login_required
+def deposit_money(request):
+    if request.method == 'POST':
+        form = DepositForm(request.POST)
+        if form.is_valid():
+            amount = form.cleaned_data['amount']
+            account, created = Account.objects.get_or_create(user=request.user)
+            account.balance += amount
+            account.save()
+            messages.success(request, "Money deposited successfully!")
+            return redirect('profile')
+    else:
+        form = DepositForm()
+    return render(request, 'deposit_money.html', {'form': form})
+
 
 def register(request):
     if request.method=='POST':

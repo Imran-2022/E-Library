@@ -3,12 +3,14 @@ from django import forms
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm,UserChangeForm
 
-# class AuthorForm(forms.ModelForm):
-#     class Meta:
-#         model=Author
-#         fields= '__all__'
-#         # fields=['name','bio']
-#         # exclude=['bio']
+
+class DepositForm(forms.Form):
+    amount = forms.DecimalField(
+        max_digits=10, 
+        decimal_places=2, 
+        min_value=0,
+        widget=forms.NumberInput(attrs={'placeholder': 'Enter amount to deposit'})
+    )
 
 class RegistrationForm(UserCreationForm):
     first_name=forms.CharField(widget=forms.TextInput(attrs={'id':'required'}))
