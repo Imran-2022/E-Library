@@ -1,9 +1,7 @@
-<!-- templates/profile.html -->
-
 {% extends "base.html" %}
 {% block content %}
   <h2>User Profile</h2>
-  <p>Balance: {{ account.balance }}</p>
+  <p>Balance: {{ account.balance }}</p> <!-- Display the user's balance -->
   <h3>Borrowing History</h3>
   <ul>
     {% for order in orders %}
@@ -16,12 +14,12 @@
   <a href="{% url 'deposit_money' %}">Deposit Money</a>
 
   <!-- Display borrowed books and include a return option -->
-<h2>Borrowed Books:</h2>
-<ul>
+  <h2>Borrowed Books:</h2>
+  <ul>
     {% for order in orders %}
-        <li>{{ order.book.title }} - 
-            <a href="{% url 'return_book' order.id %}">Return</a>
-        </li>
+      <li>{{ order.book.title }} - 
+          <a href="{% url 'return_book' order.id %}">Return</a>
+      </li>
     {% endfor %}
-</ul>
+  </ul>
 {% endblock %}

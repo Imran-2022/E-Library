@@ -9,14 +9,16 @@ from .forms import DepositForm
 from .models import Account
 # accounts/views.py
 
+from decimal import Decimal
+
 @login_required
 def deposit_money(request):
     if request.method == 'POST':
         form = DepositForm(request.POST)
         if form.is_valid():
-            amount = form.cleaned_data['amount']
+            amount = form.cleaned_data['amount']  # This is already Decimal
             account, created = Account.objects.get_or_create(user=request.user)
-            account.balance += amount
+            account.balance = Decimal(account.balance) + amount  # Ensure both are Decimal
             account.save()
             messages.success(request, "Money deposited successfully!")
             return redirect('profile')
@@ -54,11 +56,6 @@ def user_login(request):
         form = AuthenticationForm()
     return render(request, 'register.html', {'form' : form, 'type' : 'Login'})
 
-@login_required
-def profile(request):
-    data=Books.objects.all()
-    # data=Post.objects.filter(author=request.user)
-    return render(request, 'profile.html',{'data':data})
 
 
 @login_required

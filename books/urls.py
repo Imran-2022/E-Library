@@ -6,7 +6,7 @@ from . import views
 urlpatterns = [
     path('add/', views.add_post, name='add_post'),
     path('book_details/<int:id>/', views.book_details, name='book_details'),
-    path('profile/', views.order_history, name='profile'),
+    path('profile/', views.profile, name='profile'),
     path('add_comment/<int:id>/', views.add_comment, name='add_comment'),
     path('borrow_now/', views.borrow_now, name='borrow_now'),
     path('return_book/<int:id>/', views.return_book, name='return_book'),  # New URL

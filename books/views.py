@@ -116,13 +116,6 @@ def borrow_now(request):
             Book.save()
     return redirect('profile')  # Redirect to order history page or user profile
 
-@login_required
-def order_history(request):
-    orders = Order.objects.filter(user=request.user)
-    context = {'orders': orders}
-    print(context)
-    return render(request, 'profile.html', context)
-
 
 @login_required
 def add_comment(request, id):
@@ -135,3 +128,14 @@ def add_comment(request, id):
         return redirect('book_details', id=id)  # Redirect to book details using 'id' parameter
     else:
         return redirect('homepage')  # Redirect to home page if not a POST request
+
+@login_required
+def profile(request):
+    account = Account.objects.get(user=request.user)
+    orders = Order.objects.filter(user=request.user)
+    context = {
+        'account': account,
+        'orders': orders,
+    }
+    print(context)
+    return render(request, 'profile.html', context)
