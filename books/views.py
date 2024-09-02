@@ -8,6 +8,7 @@ from django.contrib import messages
 # Create your views here.
 from accounts.models import Account  # Import Account model
 from django.utils import timezone
+from decimal import Decimal
 # books/views.py
 from .forms import ReviewForm  # Import ReviewForm
 @login_required
@@ -41,24 +42,39 @@ def return_book(request, id):
     # Update the order with the return date
     order.return_date = timezone.now()
     order.save()
+    # Delete the order to remove the book from the borrowed list
+    order.delete()
 
     messages.success(request, 'Book returned successfully!')
     return redirect('profile')
 
 @login_required
 def borrow_now(request):
-    if request.method == 'POST' and request.user.is_authenticated:
+    if request.method == 'POST':
         book_id = request.POST.get('book_id')
         if book_id:
-            book = Books.objects.get(id=book_id)
-            account, created = Account.objects.get_or_create(user=request.user)
-            if account.balance >= book.borrow_price:
-                Order.objects.create(book=book, user=request.user)
-                account.balance -= book.borrow_price
-                account.save()
-                messages.success(request, 'Book borrowed successfully!')
-            else:
-                messages.warning(request, 'Insufficient balance!')
+            try:
+                book = Books.objects.get(id=book_id)
+                account, created = Account.objects.get_or_create(user=request.user)
+                
+                # Ensure borrow_price is a Decimal
+                borrow_price = Decimal(book.borrow_price)
+                if account.balance >= borrow_price:
+                    # Create an order
+                    Order.objects.create(book=book, user=request.user)
+                    
+                    # Deduct the borrow price from the user's balance
+                    # Refund the user
+                    account.balance -= book.borrow_price
+                    account.save()
+
+                    messages.success(request, 'Book borrowed successfully!')
+                else:
+                    messages.warning(request, 'Insufficient balance!')
+            
+            except Books.DoesNotExist:
+                messages.error(request, 'Book not found!')
+    
     return redirect('profile')
 
 @login_required
@@ -101,21 +117,6 @@ def delete_post(request,id):
     post=models.Post.objects.get(pk=id)
     post.delete()
     return redirect('homepage')
-
-@login_required
-def borrow_now(request):
-    if request.method == 'POST' and request.user.is_authenticated:
-        Book_id = request.POST.get('book_id')
-        if Book_id:
-            # Get the Book object
-            Book = Books.objects.get(id=Book_id)
-            # Create a new order for the current user
-            Order.objects.create(book=Book, user=request.user)  # Change 'Book' to 'book'
-            # Decrease the Book quantity
-            Book.quantity_available -= 1  # Update the field name to 'quantity_available'
-            Book.save()
-    return redirect('profile')  # Redirect to order history page or user profile
-
 
 @login_required
 def add_comment(request, id):
